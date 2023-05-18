@@ -147,12 +147,29 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                     Clientes_conectados.put(cc.getIp(), cc.getNombre());
                     cc.setClientes(Clientes_conectados);
 
-                    for (String ip_i : Clientes_conectados.keySet()) {
-                        Socket enviaDestinatario = new Socket(ip_i, puerto2);
-                        ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
-                        paqueteReenvio.writeObject(cc);
-                        enviaDestinatario.close();
-                        paqueteReenvio.close();
+                    for (Map.Entry<String, String> entry : Clientes_conectados.entrySet()) {
+                        String ipAddress = entry.getKey();
+                        String username = entry.getValue();
+
+                        try {
+                            Socket socket = new Socket(ipAddress, 9090);
+
+                            
+                            
+                            // Configurar el objeto como desees antes de enviarlo
+
+                            // Enviar el objeto a través del socket
+                            ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+                            outputStream.writeObject(cc);
+
+                            // Cerrar el socket después de enviar el objeto
+                            socket.close();
+
+                            System.out.println("Objeto enviado a " + username + " (" + ipAddress + ")");
+                        } catch (IOException e) {
+                            // Manejar cualquier excepción que pueda ocurrir durante el envío del objeto
+                            System.err.println("Error al enviar el objeto a " + username + " (" + ipAddress + "): " + e.getMessage());
+                        }
                     }
                 } else if (objeto_recibido instanceof Solicitud_chat_individual) {
                     Solicitud_chat_individual solicitud = (Solicitud_chat_individual) objeto_recibido;
