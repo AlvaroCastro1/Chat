@@ -167,7 +167,6 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                             // Cerrar el socket después de enviar el objeto
                             socket.close();
 
-                            System.out.println("Objeto enviado a " + username + " (" + ipAddress + ")");
                         } catch (IOException e) {
                             // Manejar cualquier excepción que pueda ocurrir durante el envío del objeto
                             System.err.println("Error al enviar el objeto a " + username + " (" + ipAddress + "): " + e.getMessage());
