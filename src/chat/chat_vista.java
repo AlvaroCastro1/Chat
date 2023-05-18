@@ -177,9 +177,9 @@ public class chat_vista extends javax.swing.JFrame implements Runnable {
                 if (objeto_recibido instanceof Mensaje_ind) {
                     Mensaje_ind paquete_mensaje = (Mensaje_ind) objeto_recibido;
                     // verificamos que este sea el chat donde se debe mostrar el mensaje
-                    JOptionPane.showMessageDialog(null, destinatario_nombre + " = " + paquete_mensaje.getRemitente_nombre());
+                    //JOptionPane.showMessageDialog(null, destinatario_nombre + " = " + paquete_mensaje.getRemitente_nombre());
                     if (destinatario_nombre.equals(paquete_mensaje.getRemitente_nombre())) {
-                        area_chat.append("\n"+paquete_mensaje.getDestinatario_nombre()+": "+paquete_mensaje.getMensaje());
+                        area_chat.append("\n"+paquete_mensaje.getRemitente_nombre()+": "+paquete_mensaje.getMensaje());
                     }
                 }
             }
