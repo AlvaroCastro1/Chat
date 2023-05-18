@@ -362,10 +362,10 @@ public static void main(String args[]) {
                     //NO ABRIR UN CHAT PROPIO
                     //if (!datos_chat_ind.getDestinatario_nombre().equals(mi_nombre)) {
                     Solicitud_chat_individual sl = new Solicitud_chat_individual(
-                            datos_chat_ind.getMi_nombre(),
-                            datos_chat_ind.getMi_nombre(),
                             datos_chat_ind.getDestinatario_nombre(),
                             datos_chat_ind.getDestinatario_ip(),
+                            datos_chat_ind.getMi_nombre(),
+                            datos_chat_ind.getMi_ip(),
                             host_server);
                     chat_vista nuevo = new chat_vista(datos_chat_ind);
                     nuevo.setVisible(true);
