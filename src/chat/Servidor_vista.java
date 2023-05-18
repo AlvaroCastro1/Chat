@@ -187,8 +187,9 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                     paqueteReenvio.writeObject(solicitud);
                     
 
-                    //enviar solicitud al cliente que lo creo y que lo abra
+                    //enviar solicitud al cliente que lo creo y que lo abra                    
                     Solicitud_chat_individual solicitud_regresar = (Solicitud_chat_individual) objeto_recibido;
+                    System.out.println("enviare al otro"+solicitud_regresar.toString() );
                     Socket enviaOrigen = new Socket(solicitud.getMi_ip(), puerto2);
                     
                     ObjectOutputStream paqueteReenvio2 = new ObjectOutputStream(enviaDestinatario.getOutputStream());
