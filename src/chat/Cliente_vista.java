@@ -351,25 +351,25 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
                     } else if (objeto_recibido instanceof Solicitud_chat_individual) {
                         System.out.println("Se recibió una solicitud para individual\n" + objeto_recibido.toString());
 
-                        Solicitud_chat_individual datos_chat_ind = (Solicitud_chat_individual) objeto_recibido;
-
-                        if (datos_chat_ind.getMi_ip().equals(mi_nombre)) {
-                            //yo cree este chat
-                            System.out.println("recibi mi chat");
-
-                        } else {
-                            Solicitud_chat_individual sl = new Solicitud_chat_individual(
-                                    datos_chat_ind.getDestinatario_nombre(),
-                                    datos_chat_ind.getDestinatario_ip(),
-                                    datos_chat_ind.getMi_nombre(),
-                                    datos_chat_ind.getMi_ip(),
-                                    datos_chat_ind.getHost_server(),
-                                    datos_chat_ind.getPuerto_chat()
-                            );
-                            chat_vista nuevo = new chat_vista(sl);
-                            nuevo.setTitle("recibi un chat que NO lo cree yo");
-                            nuevo.setVisible(true);
-                        }
+//                        Solicitud_chat_individual datos_chat_ind = (Solicitud_chat_individual) objeto_recibido;
+//
+//                        if (datos_chat_ind.getMi_ip().equals(mi_nombre)) {
+//                            //yo cree este chat
+//                            System.out.println("recibi mi chat");
+//
+//                        } else {
+//                            Solicitud_chat_individual sl = new Solicitud_chat_individual(
+//                                    datos_chat_ind.getDestinatario_nombre(),
+//                                    datos_chat_ind.getDestinatario_ip(),
+//                                    datos_chat_ind.getMi_nombre(),
+//                                    datos_chat_ind.getMi_ip(),
+//                                    datos_chat_ind.getHost_server(),
+//                                    datos_chat_ind.getPuerto_chat()
+//                            );
+//                            chat_vista nuevo = new chat_vista(sl);
+//                            nuevo.setTitle("recibi un chat que NO lo cree yo");
+//                            nuevo.setVisible(true);
+//                        }
                     } else if (objeto_recibido instanceof Mensaje_ind) {
                         System.out.println("Se recibió un mensaje individual");
                     } else if (objeto_recibido instanceof Solicitud_chat_grupal) {
