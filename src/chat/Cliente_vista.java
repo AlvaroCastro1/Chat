@@ -30,7 +30,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
     private final int puerto = 5000;
     private final int puerto2 = 9090;
     //private final String host_server = "localhost";
-    private final String host_server = "192.168.1.100";
+    private final String host_server = "192.168.1.101";
     private String mi_nombre = "";
     private String mi_ip = "";
     private Timer timer;
@@ -56,6 +56,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
         reloj();
         setLocationRelativeTo(null);
         mi_nombre = JOptionPane.showInputDialog(null, "¿Cual es tu nombre de usuario?");
+        mi_nombre = JOptionPane.showInputDialog(null, "¿Cual es tu IP ?");
         jl_nombre.setText("Cliente: " + mi_nombre);
         Thread hilo = new Thread(this);
         hilo.start();
@@ -162,9 +163,6 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
-            InetAddress host = InetAddress.getLocalHost();
-            mi_ip = host.getHostAddress();
-
             Cliente_conectado datos = new Cliente_conectado(mi_nombre, mi_ip, null);
 
             try (Socket misocket = new Socket(host_server, puerto); ObjectOutputStream paquete_datos = new ObjectOutputStream(misocket.getOutputStream())) {
