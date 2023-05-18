@@ -45,6 +45,11 @@ public class chat_vista extends javax.swing.JFrame implements Runnable {
         this.destinatario_ip = s.getDestinatario_ip();
 
         this.host_server = s.getHost_server();
+        
+        area_chat.append(mi_nombre+"\n"+
+                mi_ip+"\n"+
+                destinatario_nombre+"\n"+
+                destinatario_ip+"\n");
 
         jl_Titulo.setText("Chat con " + destinatario_nombre);
         Thread hilo = new Thread(this);

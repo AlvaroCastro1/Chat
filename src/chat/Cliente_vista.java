@@ -367,7 +367,7 @@ public static void main(String args[]) {
                             datos_chat_ind.getMi_nombre(),
                             datos_chat_ind.getMi_ip(),
                             host_server);
-                    chat_vista nuevo = new chat_vista(datos_chat_ind);
+                    chat_vista nuevo = new chat_vista(sl);
                     nuevo.setVisible(true);
                     //}
 
