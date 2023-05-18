@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 
@@ -165,7 +166,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
             InetAddress host = InetAddress.getLocalHost();
             mi_ip = host.getHostAddress();
 
-            Cliente_conectado datos = new Cliente_conectado(mi_nombre, mi_ip);
+            Cliente_conectado datos = new Cliente_conectado(mi_nombre, mi_ip, null);
 
             ObjectOutputStream paquete_datos = new ObjectOutputStream(misocket.getOutputStream());
             paquete_datos.writeObject(datos);
@@ -237,8 +238,8 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
             for (JCheckBox checkBox : checkBoxes) {
                 if (checkBox.isSelected()) {
                     String nombre = checkBox.getText();
-                    String ip ="";
-                     // Recorrer el HashMap para encontrar la llave correspondiente al valor deseado
+                    String ip = "";
+                    // Recorrer el HashMap para encontrar la llave correspondiente al valor deseado
                     for (Map.Entry<String, String> entry : Clientes_actuales.entrySet()) {
                         if (entry.getValue().equals(nombre)) {
                             ip = entry.getKey();
@@ -326,15 +327,21 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
                 // Cuando el servidor reciba un objeto de tipo cliente conectado, añadirlo a la lista
                 if (objeto_recibido instanceof Cliente_conectado) {
                     Cliente_conectado cc = (Cliente_conectado) objeto_recibido;
-                    String nombre = cc.getNombre();
-                    String ip = cc.getIp();
-                    DefaultTableModel model = (DefaultTableModel) tabla_contactos.getModel();
 
-                    // Agregar una nueva fila con texto
-                    model.addRow(new Object[]{nombre, ip});
+                    //limpiar la tabla
+                    tabla_contactos.removeAll();
 
-                    // Establecer el modelo en la JTable
-                    tabla_contactos.setModel(model);
+                    for (Map.Entry<String, String> entry : cc.getClientes().entrySet()) {
+                        String nombre = entry.getValue();
+                        String ip = entry.getKey();
+                        DefaultTableModel model = (DefaultTableModel) tabla_contactos.getModel();
+
+                        // Agregar una nueva fila con texto
+                        model.addRow(new Object[]{nombre, ip});
+
+                        // Establecer el modelo en la JTable
+                        tabla_contactos.setModel(model);
+                    }
 
                 } else if (objeto_recibido instanceof Solicitud_chat_individual) {
                     // recibe una "solicitud de un chat"

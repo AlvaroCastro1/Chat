@@ -132,6 +132,8 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                     area_texto.append("\n" + cc.toString());
                     //añadimos al diccionario el nuevo cliente
                     Clientes_conectados.put(cc.getIp(), cc.getNombre());
+                    //actualizamos la lista que sera enviada
+                    cc.setClientes(Clientes_conectados);
                     // avisar a todos lo clientes del nuevo usuario
                     for (String ip_i : Clientes_conectados.keySet()) {
                         Socket enviaDestinatario = new Socket(ip_i, puerto2);
