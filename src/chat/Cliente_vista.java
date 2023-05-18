@@ -349,7 +349,8 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
 
                         tabla_contactos.setModel(model);
                     } else if (objeto_recibido instanceof Solicitud_chat_individual) {
-                        System.out.println("Se recibió una solicitud para individual\n" + objeto_recibido.toString());
+                        Solicitud_chat_individual sc_ind = (Solicitud_chat_individual) objeto_recibido;
+                        System.out.println("Se recibió una solicitud para individual\n" + sc_ind.toString());
 
 //                        Solicitud_chat_individual datos_chat_ind = (Solicitud_chat_individual) objeto_recibido;
 //

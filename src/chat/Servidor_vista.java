@@ -156,10 +156,7 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                         try {
                             Socket socket = new Socket(ipAddress, 9090);
 
-                            
-                            
                             // Configurar el objeto como desees antes de enviarlo
-
                             // Enviar el objeto a través del socket
                             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
                             outputStream.writeObject(cc);
@@ -180,22 +177,31 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                     //añadimos +1 para que no se repita
                     puerto_inicial++;
 
-                    //enviar solicitud al otro cliente y que lo abra
+                    //enviar solicitud al Destino y que lo abra
                     Socket enviaDestinatario = new Socket(solicitud.getDestinatario_ip(), puerto2);
                     ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
+                    System.out.println("enviare al destino " + solicitud.toString());
                     paqueteReenvio.writeObject(solicitud);
-                    
 
-                    //enviar solicitud al cliente que lo creo y que lo abra                    
-                    Solicitud_chat_individual solicitud_regresar = (Solicitud_chat_individual) objeto_recibido;
-                    System.out.println("enviare al otro"+solicitud_regresar.toString() );
-                    Socket enviaOrigen = new Socket(solicitud.getMi_ip(), puerto2);
+                    //enviar solicitud al cliente Origen y que lo abra
+                    Solicitud_chat_individual solicitud_regresar = solicitud;
+                    String nombreDT = solicitud_regresar.getDestinatario_nombre();
+                    String ipDT = solicitud_regresar.getDestinatario_ip();
+                    String nombreOT = solicitud_regresar.getMi_nombre();
+                    String ipOT = solicitud_regresar.getMi_ip();
                     
+                    solicitud_regresar.setDestinatario_ip(ipOT);
+                    solicitud_regresar.setDestinatario_nombre(nombreOT);
+                    solicitud_regresar.setMi_ip(ipDT);
+                    solicitud_regresar.setMi_nombre(nombreDT);
+                    
+                    System.out.println("enviare al origen " + solicitud_regresar.toString());
+                    Socket enviaOrigen = new Socket(solicitud.getMi_ip(), puerto2);
+
                     ObjectOutputStream paqueteReenvio2 = new ObjectOutputStream(enviaDestinatario.getOutputStream());
                     //invertimos los datos
                     paqueteReenvio.writeObject(solicitud);
-                    
-                    
+
                     //cerrar streams
                     enviaDestinatario.close();
                     enviaOrigen.close();
