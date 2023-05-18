@@ -30,7 +30,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
     private final int puerto = 5000;
     private final int puerto2 = 9090;
     //private final String host_server = "localhost";
-    private final String host_server = "192.168.1.101";
+    private final String host_server = "192.168.1.100";
     private String mi_nombre = "";
     private String mi_ip = "";
     private Timer timer;
@@ -71,7 +71,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
         jScrollPane1 = new javax.swing.JScrollPane();
         tabla_contactos = new javax.swing.JTable();
         btn_individual = new javax.swing.JButton();
-        btn_individual1 = new javax.swing.JButton();
+        btn_grupal = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -106,10 +106,10 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
             }
         });
 
-        btn_individual1.setText("Chat Grupal");
-        btn_individual1.addActionListener(new java.awt.event.ActionListener() {
+        btn_grupal.setText("Chat Grupal");
+        btn_grupal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_individual1ActionPerformed(evt);
+                btn_grupalActionPerformed(evt);
             }
         });
 
@@ -131,7 +131,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
                 .addContainerGap()
                 .addComponent(btn_individual, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btn_individual1, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btn_grupal, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
                 .addGap(222, 222, 222)
@@ -151,7 +151,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btn_individual1, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
+                    .addComponent(btn_grupal, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
                     .addComponent(btn_individual, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -210,7 +210,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
         }
     }//GEN-LAST:event_btn_individualActionPerformed
 
-    private void btn_individual1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_individual1ActionPerformed
+    private void btn_grupalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_grupalActionPerformed
         Map<String, String> Clientes_actuales = new HashMap<>();
 
         // Obtener los datos de la tabla y agregarlos al HashMap
@@ -277,7 +277,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
         } else {
             System.out.println("No se ingresó ningún texto.");
         }
-    }//GEN-LAST:event_btn_individual1ActionPerformed
+    }//GEN-LAST:event_btn_grupalActionPerformed
 
     /**
      * @param args the command line arguments
@@ -372,8 +372,8 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_grupal;
     private javax.swing.JButton btn_individual;
-    private javax.swing.JButton btn_individual1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel jl_Titulo;
     private javax.swing.JLabel jl_nombre;

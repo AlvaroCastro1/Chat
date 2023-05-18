@@ -19,6 +19,7 @@ public class chat_grupal_vista extends javax.swing.JFrame implements Runnable {
     private final int puerto = 5000;
     private final int puerto2 = 9090;
     private final int p_com = 3030;
+    private final int p_com_g = 3031;
 
 
 
@@ -144,7 +145,7 @@ public class chat_grupal_vista extends javax.swing.JFrame implements Runnable {
     public void run() {
         try {
             // System.out.println("escuchando");
-            ServerSocket servidor = new ServerSocket(p_com);
+            ServerSocket servidor = new ServerSocket(p_com_g);
 
             while (true) {
                 Socket miSocket = servidor.accept();

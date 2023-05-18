@@ -22,6 +22,7 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
     private final int puerto = 5000;
     private final int puerto2 = 9090;
     private final int p_com = 3030;
+    private final int p_com_g = 3031;
     HashMap<String, String> Clientes_conectados = new HashMap<>();
 
     public Servidor_vista() {
@@ -201,7 +202,7 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
 
                     for (Map.Entry<String, String> entry : msj_i.getClientes_grupo().entrySet()) {
                         String ip_t = entry.getKey();
-                        Socket enviaDestinatario = new Socket(ip_t, p_com);
+                        Socket enviaDestinatario = new Socket(ip_t, p_com_g);
                         ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
                         paqueteReenvio.writeObject(msj_i);
                         enviaDestinatario.close();
