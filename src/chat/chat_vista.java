@@ -23,7 +23,7 @@ public class chat_vista extends javax.swing.JFrame implements Runnable {
 
     private final int puerto = 5000;
     private final int puerto2 = 9090;
-    private final int p_com = 3030;
+    
 
 
     private String mi_nombre;
@@ -33,6 +33,7 @@ public class chat_vista extends javax.swing.JFrame implements Runnable {
     private String destinatario_ip;
 
     private String host_server;
+    private int p_com;
 
     public chat_vista(Solicitud_chat_individual s) {
         initComponents();
@@ -45,6 +46,7 @@ public class chat_vista extends javax.swing.JFrame implements Runnable {
         this.destinatario_ip = s.getDestinatario_ip();
 
         this.host_server = s.getHost_server();
+        this.p_com = s.getPuerto_chat();
         
         area_chat.append(mi_nombre+"\n"+
                 mi_ip+"\n"+

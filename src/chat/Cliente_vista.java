@@ -29,6 +29,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
 
     private final int puerto = 5000;
     private final int puerto2 = 9090;
+    private int puerto_inicial = 49152;
     //private final String host_server = "localhost";
     private final String host_server = "192.168.1.100";
     private String mi_nombre = "";
@@ -162,7 +163,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
-            
+
             // Obtener la dirección IP de localhost
             InetAddress localhost = InetAddress.getLocalHost();
             mi_ip = localhost.getHostAddress();
@@ -191,19 +192,18 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
                 Socket miSocket = new Socket(host_server, puerto);
 
                 // Mostrar el chat
-                Solicitud_chat_individual sl = new Solicitud_chat_individual(mi_nombre, mi_ip, nombre_s, ip_s, host_server);
-                chat_vista nuevo = new chat_vista(sl);
-                nuevo.setVisible(true);
+                Solicitud_chat_individual sl = new Solicitud_chat_individual(mi_nombre, mi_ip, nombre_s, ip_s, host_server, 0);
                 // enviar "solicitud" chat al server
                 ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
                 paquete_datos.writeObject(sl);
+                System.out.println("enviare " + sl.toString());
                 paquete_datos.close();
-                btn_individual.setEnabled(false);
+                miSocket.close();
 
             } catch (UnknownHostException ex) {
-                Logger.getLogger(Cliente_vista.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Error al enviar solicitud " + ex);
             } catch (IOException ex) {
-                Logger.getLogger(Cliente_vista.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Error al enviar solicitud " + ex);
             }
 
         } else {
@@ -267,7 +267,6 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
                 ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
                 paquete_datos.writeObject(scg);
                 paquete_datos.close();
-                btn_grupal.setEnabled(false);
 
             } catch (UnknownHostException ex) {
                 Logger.getLogger(Cliente_vista.class.getName()).log(Level.SEVERE, null, ex);
@@ -355,9 +354,12 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
                                 datos_chat_ind.getDestinatario_ip(),
                                 datos_chat_ind.getMi_nombre(),
                                 datos_chat_ind.getMi_ip(),
-                                host_server);
+                                datos_chat_ind.getHost_server(),
+                                datos_chat_ind.getPuerto_chat()
+                        );
                         chat_vista nuevo = new chat_vista(sl);
                         nuevo.setVisible(true);
+                        System.out.println("Se recibió una solicitud para individual\n" + objeto_recibido.toString());
                     } else if (objeto_recibido instanceof Mensaje_ind) {
                         System.out.println("Se recibió un mensaje individual");
                     } else if (objeto_recibido instanceof Solicitud_chat_grupal) {
@@ -367,8 +369,8 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
                     }
                 }
             }
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Hubo un error al recibir: " + e);
         }
 
     }

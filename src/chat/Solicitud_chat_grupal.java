@@ -14,16 +14,26 @@ public class Solicitud_chat_grupal implements Serializable{
     private String Nombre_grupo;
     private Map<String, String> Clientes;
     
+    private int puerto_chat;
 
-    public Solicitud_chat_grupal(String host_server, String Nombre_grupo, Map<String, String> Clientes) {
+    public Solicitud_chat_grupal(String host_server, String Nombre_grupo, Map<String, String> Clientes, int puerto_chat) {
         this.host_server = host_server;
         this.Nombre_grupo = Nombre_grupo;
         this.Clientes = Clientes;
+        this.puerto_chat = puerto_chat;
     }
 
     @Override
     public String toString() {
         return "Solicitud_chat_grupal " + Nombre_grupo + ", Clientes=" + Clientes;
+    }
+
+    public int getPuerto_chat() {
+        return puerto_chat;
+    }
+
+    public void setPuerto_chat(int puerto_chat) {
+        this.puerto_chat = puerto_chat;
     }
 
     public String getHost_server() {

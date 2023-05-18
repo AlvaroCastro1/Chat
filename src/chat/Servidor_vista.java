@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -21,8 +22,8 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
 
     private final int puerto = 5000;
     private final int puerto2 = 9090;
-    private final int p_com = 3030;
-    private final int p_com_g = 3031;
+    //aqui se empezaran a crear los chat
+    private int puerto_inicial = 49152;
     HashMap<String, String> Clientes_conectados = new HashMap<>();
 
     public Servidor_vista() {
@@ -175,17 +176,36 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                 } else if (objeto_recibido instanceof Solicitud_chat_individual) {
                     Solicitud_chat_individual solicitud = (Solicitud_chat_individual) objeto_recibido;
                     area_texto.append("\nChat ind entre " + solicitud.getMi_nombre() + " y " + solicitud.getDestinatario_nombre());
+                    // primero cambiamos el puerto
+                    solicitud.setPuerto_chat(puerto_inicial);
+                    //añadimos +1 para que no se repita
+                    puerto_inicial++;
 
+                    //enviar solicitud al otro cliente y que lo abra
                     Socket enviaDestinatario = new Socket(solicitud.getDestinatario_ip(), puerto2);
                     ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
                     paqueteReenvio.writeObject(solicitud);
+                    
+
+                    //enviar solicitud al cliente que lo creo y que lo abra
+                    Solicitud_chat_individual solicitud_regresar = (Solicitud_chat_individual) objeto_recibido;
+                    Socket enviaOrigen = new Socket(solicitud.getMi_ip(), puerto2);
+                    
+                    ObjectOutputStream paqueteReenvio2 = new ObjectOutputStream(enviaDestinatario.getOutputStream());
+                    //invertimos los datos
+                    paqueteReenvio.writeObject(solicitud);
+                    
+                    
+                    //cerrar streams
                     enviaDestinatario.close();
+                    enviaOrigen.close();
                     paqueteReenvio.close();
+                    paqueteReenvio2.close();
                 } else if (objeto_recibido instanceof Mensaje_ind) {
                     Mensaje_ind msj_i = (Mensaje_ind) objeto_recibido;
                     area_texto.append("\nmensaje de " + msj_i.getRemitente_nombre() + " para " + msj_i.getDestinatario_nombre());
 
-                    Socket enviaDestinatario = new Socket(msj_i.getDestinatario_ip(), p_com);
+                    Socket enviaDestinatario = new Socket(msj_i.getDestinatario_ip(), p_com, );
                     ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
                     paqueteReenvio.writeObject(msj_i);
                     enviaDestinatario.close();
