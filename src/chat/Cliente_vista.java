@@ -29,7 +29,8 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
 
     private final int puerto = 5000;
     private final int puerto2 = 9090;
-    private final String host_server = "localhost";
+    //private final String host_server = "localhost";
+    private final String host_server = "192.168.1.101";
     private String mi_nombre = "";
     private String mi_ip = "";
     private Timer timer;
