@@ -184,6 +184,7 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                     paqueteReenvio.writeObject(solicitud);
 
                     //enviar solicitud al cliente Origen y que lo abra
+                    //invertimos los datos
                     Solicitud_chat_individual solicitud_regresar = solicitud;
                     String nombreDT = solicitud_regresar.getDestinatario_nombre();
                     String ipDT = solicitud_regresar.getDestinatario_ip();
@@ -196,11 +197,10 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                     solicitud_regresar.setMi_nombre(nombreDT);
                     
                     System.out.println("enviare al origen " + solicitud_regresar.toString());
-                    Socket enviaOrigen = new Socket(solicitud.getMi_ip(), puerto2);
+                    Socket enviaOrigen = new Socket(solicitud_regresar.getMi_ip(), puerto2);
 
                     ObjectOutputStream paqueteReenvio2 = new ObjectOutputStream(enviaDestinatario.getOutputStream());
-                    //invertimos los datos
-                    paqueteReenvio.writeObject(solicitud);
+                    paqueteReenvio.writeObject(solicitud_regresar);
 
                     //cerrar streams
                     enviaDestinatario.close();
