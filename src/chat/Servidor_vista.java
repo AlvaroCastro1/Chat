@@ -31,8 +31,7 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
         hilo.start();
     }
 
-    
-    public void mostrar_Ip(){
+    public void mostrar_Ip() {
         try {
             // Obtener la dirección IP local
             InetAddress localHost = InetAddress.getLocalHost();
@@ -40,12 +39,13 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
 
             // Mostrar la dirección IP en un JOptionPane
             JOptionPane.showMessageDialog(null, "La dirección IP del Servidor es: " + ipAddress, "COMPARTELA", JOptionPane.INFORMATION_MESSAGE);
-            
+
         } catch (UnknownHostException e) {
             // Manejar posibles errores al obtener la dirección IP
             JOptionPane.showMessageDialog(null, "No se pudo obtener la dirección IP de tu computadora.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -133,67 +133,55 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
 
     public void run() {
         try {
-            // System.out.println("escuchando");
             ServerSocket servidor = new ServerSocket(puerto);
 
             while (true) {
+                System.out.println("Escuchando");
                 Socket miSocket = servidor.accept();
-
                 ObjectInputStream paquete_datos = new ObjectInputStream(miSocket.getInputStream());
-
                 Object objeto_recibido = paquete_datos.readObject();
-                // Cuando el servidor reciba un objeto de tipo integrante, añadirlo a un equipo
+
                 if (objeto_recibido instanceof Cliente_conectado) {
                     Cliente_conectado cc = (Cliente_conectado) objeto_recibido;
                     area_texto.append("\n" + cc.toString());
-                    //añadimos al diccionario el nuevo cliente
                     Clientes_conectados.put(cc.getIp(), cc.getNombre());
-                    //actualizamos la lista que sera enviada
                     cc.setClientes(Clientes_conectados);
-                    // avisar a todos lo clientes del nuevo usuario
+
                     for (String ip_i : Clientes_conectados.keySet()) {
                         Socket enviaDestinatario = new Socket(ip_i, puerto2);
                         ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
                         paqueteReenvio.writeObject(cc);
                         enviaDestinatario.close();
                         paqueteReenvio.close();
-                        miSocket.close();
                     }
-
                 } else if (objeto_recibido instanceof Solicitud_chat_individual) {
-                    // mandar mensaje a los clientes
                     Solicitud_chat_individual solicitud = (Solicitud_chat_individual) objeto_recibido;
                     area_texto.append("\nChat ind entre " + solicitud.getMi_nombre() + " y " + solicitud.getDestinatario_nombre());
-                    //enviar la solicitud al otro cliente
+
                     Socket enviaDestinatario = new Socket(solicitud.getDestinatario_ip(), puerto2);
                     ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
                     paqueteReenvio.writeObject(solicitud);
                     enviaDestinatario.close();
                     paqueteReenvio.close();
-                    miSocket.close();
                 } else if (objeto_recibido instanceof Mensaje_ind) {
                     Mensaje_ind msj_i = (Mensaje_ind) objeto_recibido;
                     area_texto.append("\nmensaje de " + msj_i.getRemitente_nombre() + " para " + msj_i.getDestinatario_nombre());
-                    //reenviar mensaje al otro cliente
+
                     Socket enviaDestinatario = new Socket(msj_i.getDestinatario_ip(), p_com);
                     ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
                     paqueteReenvio.writeObject(msj_i);
                     enviaDestinatario.close();
                     paqueteReenvio.close();
-                    miSocket.close();
                 } else if (objeto_recibido instanceof Solicitud_chat_grupal) {
-                    // mandar mensaje a los clientes
                     Solicitud_chat_grupal solicitud = (Solicitud_chat_grupal) objeto_recibido;
                     area_texto.append("\nNuevo Chat grupal " + solicitud.getNombre_grupo());
                     area_texto.append(solicitud.getClientes().toString());
 
-                    //enviar la solicitud al otro cliente
                     enviar_objeto(solicitud, solicitud.getClientes());
-
                 } else if (objeto_recibido instanceof Mensaje_grupal) {
                     Mensaje_grupal msj_i = (Mensaje_grupal) objeto_recibido;
-                    area_texto.append("\nmensaje del  Grupo " + msj_i.getNombre_Grupo());
-                    //reenviar mensaje a todos los clientes
+                    area_texto.append("\nmensaje del Grupo " + msj_i.getNombre_Grupo());
+
                     for (Map.Entry<String, String> entry : msj_i.getClientes_grupo().entrySet()) {
                         String ip_t = entry.getKey();
                         Socket enviaDestinatario = new Socket(ip_t, p_com);
@@ -201,15 +189,15 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                         paqueteReenvio.writeObject(msj_i);
                         enviaDestinatario.close();
                         paqueteReenvio.close();
-                        miSocket.close();
                     }
                 }
+                miSocket.close();
             }
 
         } catch (IOException ex) {
             System.out.println("Error: " + ex);
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Servidor_vista.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error: " + ex);
         }
     }
 

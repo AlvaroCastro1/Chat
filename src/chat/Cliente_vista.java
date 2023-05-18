@@ -30,7 +30,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
     private final int puerto = 5000;
     private final int puerto2 = 9090;
     //private final String host_server = "localhost";
-    private final String host_server = "192.168.1.101";
+    private final String host_server = "192.168.1.100";
     private String mi_nombre = "";
     private String mi_ip = "";
     private Timer timer;
@@ -162,16 +162,15 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
-            Socket misocket = new Socket(host_server, puerto);
-
             InetAddress host = InetAddress.getLocalHost();
             mi_ip = host.getHostAddress();
 
             Cliente_conectado datos = new Cliente_conectado(mi_nombre, mi_ip, null);
 
-            ObjectOutputStream paquete_datos = new ObjectOutputStream(misocket.getOutputStream());
-            paquete_datos.writeObject(datos);
-            misocket.close();
+            try (Socket misocket = new Socket(host_server, puerto); ObjectOutputStream paquete_datos = new ObjectOutputStream(misocket.getOutputStream())) {
+
+                paquete_datos.writeObject(datos);
+            }
         } catch (Exception e2) {
             System.out.println("Error " + e2);
         }
@@ -277,10 +276,10 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
         }
     }//GEN-LAST:event_btn_individual1ActionPerformed
 
-/**
- * @param args the command line arguments
- */
-public static void main(String args[]) {
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -292,27 +291,23 @@ public static void main(String args[]) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
 
-}
+                }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Cliente_vista.class  
+            java.util.logging.Logger.getLogger(Cliente_vista.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
 
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Cliente_vista.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
 
-} catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Cliente_vista.class  
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Cliente_vista.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
 
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
-} catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Cliente_vista.class  
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-
-} catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Cliente_vista.class  
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Cliente_vista.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -328,65 +323,49 @@ public static void main(String args[]) {
     }
 
     public void run() {
-        try {
-            ServerSocket servidor = new ServerSocket(puerto2);
-
+        try (ServerSocket servidor = new ServerSocket(puerto2)) {
             while (true) {
-                Socket miSocket = servidor.accept();
+                try (Socket miSocket = servidor.accept(); ObjectInputStream paquete_datos = new ObjectInputStream(miSocket.getInputStream())) {
 
-                ObjectInputStream paquete_datos = new ObjectInputStream(miSocket.getInputStream());
+                    Object objeto_recibido = paquete_datos.readObject();
 
-                Object objeto_recibido = paquete_datos.readObject();
-                // Cuando el servidor reciba un objeto de tipo cliente conectado, añadirlo a la lista
-                if (objeto_recibido instanceof Cliente_conectado) {
-                    Cliente_conectado cc = (Cliente_conectado) objeto_recibido;
+                    if (objeto_recibido instanceof Cliente_conectado) {
+                        Cliente_conectado cc = (Cliente_conectado) objeto_recibido;
 
-                    //limpiar la tabla
-                    DefaultTableModel tb = (DefaultTableModel) tabla_contactos.getModel();
-                    tb.setRowCount(0);
-
-                    for (Map.Entry<String, String> entry : cc.getClientes().entrySet()) {
-                        String nombre = entry.getValue();
-                        String ip = entry.getKey();
                         DefaultTableModel model = (DefaultTableModel) tabla_contactos.getModel();
+                        model.setRowCount(0);
 
-                        // Agregar una nueva fila con texto
-                        model.addRow(new Object[]{nombre, ip});
+                        for (Map.Entry<String, String> entry : cc.getClientes().entrySet()) {
+                            String nombre = entry.getValue();
+                            String ip = entry.getKey();
+                            model.addRow(new Object[]{nombre, ip});
+                        }
 
-                        // Establecer el modelo en la JTable
                         tabla_contactos.setModel(model);
+                    } else if (objeto_recibido instanceof Solicitud_chat_individual) {
+                        Solicitud_chat_individual datos_chat_ind = (Solicitud_chat_individual) objeto_recibido;
+
+                        Solicitud_chat_individual sl = new Solicitud_chat_individual(
+                                datos_chat_ind.getDestinatario_nombre(),
+                                datos_chat_ind.getDestinatario_ip(),
+                                datos_chat_ind.getMi_nombre(),
+                                datos_chat_ind.getMi_ip(),
+                                host_server);
+                        chat_vista nuevo = new chat_vista(sl);
+                        nuevo.setVisible(true);
+                    } else if (objeto_recibido instanceof Mensaje_ind) {
+                        System.out.println("Se recibió un mensaje individual");
+                    } else if (objeto_recibido instanceof Solicitud_chat_grupal) {
+                        Solicitud_chat_grupal datos_chat_grup = (Solicitud_chat_grupal) objeto_recibido;
+                        chat_grupal_vista chv = new chat_grupal_vista(datos_chat_grup, mi_nombre);
+                        chv.setVisible(true);
                     }
-
-                } else if (objeto_recibido instanceof Solicitud_chat_individual) {
-                    // recibe una "solicitud de un chat"
-                    Solicitud_chat_individual datos_chat_ind = (Solicitud_chat_individual) objeto_recibido;
-                    //NO ABRIR UN CHAT PROPIO
-                    //if (!datos_chat_ind.getDestinatario_nombre().equals(mi_nombre)) {
-                    Solicitud_chat_individual sl = new Solicitud_chat_individual(
-                            datos_chat_ind.getDestinatario_nombre(),
-                            datos_chat_ind.getDestinatario_ip(),
-                            datos_chat_ind.getMi_nombre(),
-                            datos_chat_ind.getMi_ip(),
-                            host_server);
-                    chat_vista nuevo = new chat_vista(sl);
-                    nuevo.setVisible(true);
-                    //}
-
-                } else if (objeto_recibido instanceof Mensaje_ind) {
-                    // recibe un "mensaje"
-                    System.out.println("se recibio un mensaje individual");
-
-                } else if (objeto_recibido instanceof Solicitud_chat_grupal) {
-                    // recibe una "solicitud de un chat Grupal"
-                    Solicitud_chat_grupal datos_chat_grup = (Solicitud_chat_grupal) objeto_recibido;
-                    chat_grupal_vista chv = new chat_grupal_vista(datos_chat_grup, mi_nombre);
-                    chv.setVisible(true);
                 }
-
             }
         } catch (Exception e) {
             System.out.println(e);
         }
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
