@@ -25,14 +25,17 @@ public class chat_grupal_vista extends javax.swing.JFrame implements Runnable {
     private String host_server;
     private String Nombre_grupo;
     private Map<String, String> Clientes;
+    
+    private String mi_nombre;
 
-    public chat_grupal_vista(Solicitud_chat_grupal s) {
+    public chat_grupal_vista(Solicitud_chat_grupal s, String mi_nombre) {
         initComponents();
         setLocationRelativeTo(null);
 
         this.host_server = s.getHost_server();
         this.Nombre_grupo = s.getNombre_grupo();
         this.Clientes = s.getClientes();
+        this.mi_nombre = mi_nombre;
 
 
         jl_Titulo.setText(Nombre_grupo);
@@ -116,7 +119,7 @@ public class chat_grupal_vista extends javax.swing.JFrame implements Runnable {
 
             String texto_mensaje = txt_mensaje.getText().trim();
             
-            Mensaje_grupal m = new Mensaje_grupal(Clientes,txt_mensaje.getText(), jl_Titulo.getText(), host_server);
+            Mensaje_grupal m = new Mensaje_grupal(Clientes,mi_nombre + ": "+txt_mensaje.getText(), jl_Titulo.getText(), host_server);
 
             ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
             paquete_datos.writeObject(m);

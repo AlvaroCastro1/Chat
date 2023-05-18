@@ -379,7 +379,7 @@ public static void main(String args[]) {
                 } else if (objeto_recibido instanceof Solicitud_chat_grupal) {
                     // recibe una "solicitud de un chat Grupal"
                     Solicitud_chat_grupal datos_chat_grup = (Solicitud_chat_grupal) objeto_recibido;
-                    chat_grupal_vista chv = new chat_grupal_vista(datos_chat_grup);
+                    chat_grupal_vista chv = new chat_grupal_vista(datos_chat_grup, mi_nombre);
                     chv.setVisible(true);
                 }
 
