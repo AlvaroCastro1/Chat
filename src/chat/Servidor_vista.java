@@ -6,10 +6,12 @@ import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,7 +21,8 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
 
     private final int puerto = 5000;
     private final int puerto2 = 9090;
-    HashMap<String, String> Clientes_conectados = new HashMap<>(100);
+    private final int p_com = 3030;
+    HashMap<String, String> Clientes_conectados = new HashMap<>();
 
     public Servidor_vista() {
         initComponents();
@@ -117,7 +120,6 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
             // System.out.println("escuchando");
             ServerSocket servidor = new ServerSocket(puerto);
 
-
             while (true) {
                 Socket miSocket = servidor.accept();
 
@@ -127,9 +129,9 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                 // Cuando el servidor reciba un objeto de tipo integrante, añadirlo a un equipo
                 if (objeto_recibido instanceof Cliente_conectado) {
                     Cliente_conectado cc = (Cliente_conectado) objeto_recibido;
-                    area_texto.append(cc.toString());
+                    area_texto.append("\n" + cc.toString());
                     //añadimos al diccionario el nuevo cliente
-                    Clientes_conectados.put(cc.getIp(),cc.getNombre());
+                    Clientes_conectados.put(cc.getIp(), cc.getNombre());
                     // avisar a todos lo clientes del nuevo usuario
                     for (String ip_i : Clientes_conectados.keySet()) {
                         Socket enviaDestinatario = new Socket(ip_i, puerto2);
@@ -139,23 +141,83 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                         paqueteReenvio.close();
                         miSocket.close();
                     }
-                    
+
+                } else if (objeto_recibido instanceof Solicitud_chat_individual) {
+                    // mandar mensaje a los clientes
+                    Solicitud_chat_individual solicitud = (Solicitud_chat_individual) objeto_recibido;
+                    area_texto.append("\nChat ind entre " + solicitud.getMi_nombre() + " y " + solicitud.getDestinatario_nombre());
+                    //enviar la solicitud al otro cliente
+                    Socket enviaDestinatario = new Socket(solicitud.getDestinatario_ip(), puerto2);
+                    ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
+                    paqueteReenvio.writeObject(solicitud);
+                    enviaDestinatario.close();
+                    paqueteReenvio.close();
+                    miSocket.close();
+                } else if (objeto_recibido instanceof Mensaje_ind) {
+                    Mensaje_ind msj_i = (Mensaje_ind) objeto_recibido;
+                    area_texto.append("\nmensaje de " + msj_i.getRemitente_nombre() + " para " + msj_i.getDestinatario_nombre());
+                    //reenviar mensaje al otro cliente
+                    Socket enviaDestinatario = new Socket(msj_i.getDestinatario_ip(), p_com);
+                    ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
+                    paqueteReenvio.writeObject(msj_i);
+                    enviaDestinatario.close();
+                    paqueteReenvio.close();
+                    miSocket.close();
+                } else if (objeto_recibido instanceof Solicitud_chat_grupal) {
+                    // mandar mensaje a los clientes
+                    Solicitud_chat_grupal solicitud = (Solicitud_chat_grupal) objeto_recibido;
+                    area_texto.append("\nNuevo Chat grupal " + solicitud.getNombre_grupo());
+                    area_texto.append(solicitud.getClientes().toString());
+
+                    //enviar la solicitud al otro cliente
+                    enviar_objeto(solicitud, solicitud.getClientes());
+
+                } else if (objeto_recibido instanceof Mensaje_grupal) {
+                    Mensaje_grupal msj_i = (Mensaje_grupal) objeto_recibido;
+                    area_texto.append("\nmensaje del  Grupo " + msj_i.getNombre_Grupo());
+                    //reenviar mensaje a todos los clientes
+                    for (Map.Entry<String, String> entry : msj_i.getClientes_grupo().entrySet()) {
+                        String ip_t = entry.getKey();
+                        Socket enviaDestinatario = new Socket(ip_t, p_com);
+                        ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
+                        paqueteReenvio.writeObject(msj_i);
+                        enviaDestinatario.close();
+                        paqueteReenvio.close();
+                        miSocket.close();
+                    }
                 }
             }
 
         } catch (IOException ex) {
-            System.out.println("Error: "+ex);
+            System.out.println("Error: " + ex);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Servidor_vista.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    
-    
-    
-    
-    
-    
+
+    public void enviar_objeto(Object objeto, Map<String, String> clientes) {
+        for (Map.Entry<String, String> entry : clientes.entrySet()) {
+            String nombre = entry.getValue();
+            String ip = entry.getKey();
+
+            try {
+                Socket miSocket = new Socket(ip, puerto2);
+
+                // enviar "solicitud" chat al cliente
+                ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
+                paquete_datos.writeObject(objeto);
+                paquete_datos.close();
+
+            } catch (UnknownHostException ex) {
+                Logger.getLogger(Cliente_vista.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IOException ex) {
+                Logger.getLogger(Cliente_vista.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+        }
+    }
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea area_texto;
     private javax.swing.JLabel jLabel1;
