@@ -203,14 +203,14 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                     paqueteReenvio.close();
                     paqueteReenvio2.close();
                 } else if (objeto_recibido instanceof Mensaje_ind) {
-                    Mensaje_ind msj_i = (Mensaje_ind) objeto_recibido;
-                    area_texto.append("\nmensaje de " + msj_i.getRemitente_nombre() + " para " + msj_i.getDestinatario_nombre());
-
-                    Socket enviaDestinatario = new Socket(msj_i.getDestinatario_ip(), p_com, );
-                    ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
-                    paqueteReenvio.writeObject(msj_i);
-                    enviaDestinatario.close();
-                    paqueteReenvio.close();
+//                    Mensaje_ind msj_i = (Mensaje_ind) objeto_recibido;
+//                    area_texto.append("\nmensaje de " + msj_i.getRemitente_nombre() + " para " + msj_i.getDestinatario_nombre());
+//
+//                    Socket enviaDestinatario = new Socket(msj_i.getDestinatario_ip(), p_com, );
+//                    ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
+//                    paqueteReenvio.writeObject(msj_i);
+//                    enviaDestinatario.close();
+//                    paqueteReenvio.close();
                 } else if (objeto_recibido instanceof Solicitud_chat_grupal) {
                     Solicitud_chat_grupal solicitud = (Solicitud_chat_grupal) objeto_recibido;
                     area_texto.append("\nNuevo Chat grupal " + solicitud.getNombre_grupo());
@@ -218,17 +218,17 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
 
                     enviar_objeto(solicitud, solicitud.getClientes());
                 } else if (objeto_recibido instanceof Mensaje_grupal) {
-                    Mensaje_grupal msj_i = (Mensaje_grupal) objeto_recibido;
-                    area_texto.append("\nmensaje del Grupo " + msj_i.getNombre_Grupo());
-
-                    for (Map.Entry<String, String> entry : msj_i.getClientes_grupo().entrySet()) {
-                        String ip_t = entry.getKey();
-                        Socket enviaDestinatario = new Socket(ip_t, p_com_g);
-                        ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
-                        paqueteReenvio.writeObject(msj_i);
-                        enviaDestinatario.close();
-                        paqueteReenvio.close();
-                    }
+//                    Mensaje_grupal msj_i = (Mensaje_grupal) objeto_recibido;
+//                    area_texto.append("\nmensaje del Grupo " + msj_i.getNombre_Grupo());
+//
+//                    for (Map.Entry<String, String> entry : msj_i.getClientes_grupo().entrySet()) {
+//                        String ip_t = entry.getKey();
+//                        Socket enviaDestinatario = new Socket(ip_t, p_com_g);
+//                        ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
+//                        paqueteReenvio.writeObject(msj_i);
+//                        enviaDestinatario.close();
+//                        paqueteReenvio.close();
+//                    }
                 }
                 miSocket.close();
             }
