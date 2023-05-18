@@ -180,6 +180,8 @@ public class chat_vista extends javax.swing.JFrame implements Runnable {
                     //JOptionPane.showMessageDialog(null, destinatario_nombre + " = " + paquete_mensaje.getRemitente_nombre());
                     if (destinatario_nombre.equals(paquete_mensaje.getRemitente_nombre())) {
                         area_chat.append("\n"+paquete_mensaje.getRemitente_nombre()+": "+paquete_mensaje.getMensaje());
+                    }else{
+                        System.out.println("aqui NO");
                     }
                 }
             }
