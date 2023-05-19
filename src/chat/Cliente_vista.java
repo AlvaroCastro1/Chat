@@ -2,6 +2,7 @@ package chat;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -279,7 +280,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
         } else {
             System.out.println("No se ingresó ningún texto.");
         }
-        */
+         */
     }//GEN-LAST:event_btn_grupalActionPerformed
 
     /**
@@ -329,63 +330,67 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
     }
 
     public void run() {
-        try (ServerSocket servidor = new ServerSocket(puerto2)) {
-            while (true) {
-                try (Socket miSocket = servidor.accept(); ObjectInputStream paquete_datos = new ObjectInputStream(miSocket.getInputStream())) {
 
-                    Object objeto_recibido = paquete_datos.readObject();
+        try {
+            ServerSocket servidor = new ServerSocket(puerto2);
+            Socket miSocket = servidor.accept();
+            ObjectInputStream paquete_datos = new ObjectInputStream(miSocket.getInputStream());
+            Object objeto_recibido = paquete_datos.readObject();
+            if (objeto_recibido instanceof Cliente_conectado) {
+                Cliente_conectado cc = (Cliente_conectado) objeto_recibido;
 
-                    if (objeto_recibido instanceof Cliente_conectado) {
-                        Cliente_conectado cc = (Cliente_conectado) objeto_recibido;
+                DefaultTableModel model = (DefaultTableModel) tabla_contactos.getModel();
+                model.setRowCount(0);
 
-                        DefaultTableModel model = (DefaultTableModel) tabla_contactos.getModel();
-                        model.setRowCount(0);
-
-                        for (Map.Entry<String, String> entry : cc.getClientes().entrySet()) {
-                            String nombre = entry.getValue();
-                            String ip = entry.getKey();
-                            model.addRow(new Object[]{nombre, ip});
-                        }
-
-                        tabla_contactos.setModel(model);
-                    } else if (objeto_recibido instanceof Solicitud_chat_individual) {
-                        Solicitud_chat_individual sc_ind = (Solicitud_chat_individual) objeto_recibido;
-                        System.out.println("Se recibió una solicitud para individual\n" + sc_ind.toString());
-
-//                        Solicitud_chat_individual datos_chat_ind = (Solicitud_chat_individual) objeto_recibido;
-//
-//                        if (datos_chat_ind.getMi_ip().equals(mi_nombre)) {
-//                            //yo cree este chat
-//                            System.out.println("recibi mi chat");
-//
-//                        } else {
-//                            Solicitud_chat_individual sl = new Solicitud_chat_individual(
-//                                    datos_chat_ind.getDestinatario_nombre(),
-//                                    datos_chat_ind.getDestinatario_ip(),
-//                                    datos_chat_ind.getMi_nombre(),
-//                                    datos_chat_ind.getMi_ip(),
-//                                    datos_chat_ind.getHost_server(),
-//                                    datos_chat_ind.getPuerto_chat()
-//                            );
-//                            chat_vista nuevo = new chat_vista(sl);
-//                            nuevo.setTitle("recibi un chat que NO lo cree yo");
-//                            nuevo.setVisible(true);
-//                        }
-                    } else if (objeto_recibido instanceof Mensaje_ind) {
-                        System.out.println("Se recibió un mensaje individual");
-                    } else if (objeto_recibido instanceof Solicitud_chat_grupal) {
-                        Solicitud_chat_grupal datos_chat_grup = (Solicitud_chat_grupal) objeto_recibido;
-                        chat_grupal_vista chv = new chat_grupal_vista(datos_chat_grup, mi_nombre);
-                        chv.setVisible(true);
-                    }
+                for (Map.Entry<String, String> entry : cc.getClientes().entrySet()) {
+                    String nombre = entry.getValue();
+                    String ip = entry.getKey();
+                    model.addRow(new Object[]{nombre, ip});
                 }
+
+                tabla_contactos.setModel(model);
+            } else if (objeto_recibido instanceof Solicitud_chat_individual) {
+                System.out.println("Se recibió una solicitud para individual\n");
             }
+
+        } catch (EOFException e) {
+            // Manejo de la excepción EOFException
+            System.out.println("Se alcanzó el final de la secuencia de datos: " + e);
         } catch (IOException | ClassNotFoundException e) {
+            // Manejo de otras excepciones
             System.out.println("Hubo un error al recibir: " + e);
         }
 
+//        try (ServerSocket servidor = new ServerSocket(puerto2)) {
+//            while (true) {
+//                try (Socket miSocket = servidor.accept(); ObjectInputStream paquete_datos = new ObjectInputStream(miSocket.getInputStream())) {
+//
+//                    Object objeto_recibido = paquete_datos.readObject();
+//
+//                    if (objeto_recibido instanceof Cliente_conectado) {
+//                        Cliente_conectado cc = (Cliente_conectado) objeto_recibido;
+//
+//                        DefaultTableModel model = (DefaultTableModel) tabla_contactos.getModel();
+//                        model.setRowCount(0);
+//
+//                        for (Map.Entry<String, String> entry : cc.getClientes().entrySet()) {
+//                            String nombre = entry.getValue();
+//                            String ip = entry.getKey();
+//                            model.addRow(new Object[]{nombre, ip});
+//                        }
+//
+//                        tabla_contactos.setModel(model);
+//                    } else if (objeto_recibido instanceof Solicitud_chat_individual) {
+//                        System.out.println("Se recibió una solicitud para individual\n");
+//
+//                    } else if (objeto_recibido instanceof Solicitud_chat_grupal) {
+//                    }
+//                }
+//            }
+//        } catch (IOException | ClassNotFoundException e) {
+//            System.out.println("Hubo un error al recibir: " + e);
+//        }
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_grupal;
     private javax.swing.JButton btn_individual;
