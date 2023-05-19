@@ -26,25 +26,9 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
     HashMap<String, String> Clientes_conectados = new HashMap<>();
 
     public Servidor_vista() {
-        mostrar_Ip();
         initComponents();
         Thread hilo = new Thread(this);
         hilo.start();
-    }
-
-    public void mostrar_Ip() {
-        try {
-            // Obtener la dirección IP local
-            InetAddress localHost = InetAddress.getLocalHost();
-            String ipAddress = localHost.getHostAddress();
-
-            // Mostrar la dirección IP en un JOptionPane
-            JOptionPane.showMessageDialog(null, "La dirección IP del Servidor es: " + ipAddress, "COMPARTELA", JOptionPane.INFORMATION_MESSAGE);
-
-        } catch (UnknownHostException e) {
-            // Manejar posibles errores al obtener la dirección IP
-            JOptionPane.showMessageDialog(null, "No se pudo obtener la dirección IP de tu computadora.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
     }
 
     /**

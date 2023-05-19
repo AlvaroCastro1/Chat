@@ -19,14 +19,12 @@ public class chat_grupal_vista extends javax.swing.JFrame implements Runnable {
     private final int puerto = 5000;
     private final int puerto2 = 9090;
     private final int p_com = 3030;
-    private final int p_com_g = 3031;
-
-
+    private int p_com_g;
 
     private String host_server;
     private String Nombre_grupo;
     private Map<String, String> Clientes;
-    
+
     private String mi_nombre;
 
     public chat_grupal_vista(Solicitud_chat_grupal s, String mi_nombre) {
@@ -37,7 +35,7 @@ public class chat_grupal_vista extends javax.swing.JFrame implements Runnable {
         this.Nombre_grupo = s.getNombre_grupo();
         this.Clientes = s.getClientes();
         this.mi_nombre = mi_nombre;
-
+        this.p_com_g = s.getPuerto_chat();
 
         jl_Titulo.setText(Nombre_grupo);
         Thread hilo = new Thread(this);
@@ -115,12 +113,12 @@ public class chat_grupal_vista extends javax.swing.JFrame implements Runnable {
 
 
     private void btn_enviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_enviarActionPerformed
-        try {   
+        try {
             Socket miSocket = new Socket(host_server, puerto);
 
             String texto_mensaje = txt_mensaje.getText().trim();
-            
-            Mensaje_grupal m = new Mensaje_grupal(Clientes,mi_nombre + ": "+txt_mensaje.getText(), jl_Titulo.getText(), host_server);
+
+            Mensaje_grupal m = new Mensaje_grupal(Clientes, mi_nombre + ": " + txt_mensaje.getText(), jl_Titulo.getText(), host_server);
 
             ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
             paquete_datos.writeObject(m);
@@ -156,14 +154,16 @@ public class chat_grupal_vista extends javax.swing.JFrame implements Runnable {
                 if (objeto_recibido instanceof Mensaje_grupal) {
                     Mensaje_grupal paquete_mensaje = (Mensaje_grupal) objeto_recibido;
                     // verificamos que este sea el chat donde se debe mostrar el mensaje
-                    
+
                     if (Nombre_grupo.equals(paquete_mensaje.getNombre_Grupo())) {
-                        area_chat.append("\n"+paquete_mensaje.getMensaje());
+                        area_chat.append("\n" + paquete_mensaje.getMensaje());
                     }
                 }
+                servidor.close();
+                miSocket.close();
             }
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 

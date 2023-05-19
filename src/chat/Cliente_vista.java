@@ -164,7 +164,6 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
-
             // Obtener la dirección IP de localhost
             InetAddress localhost = InetAddress.getLocalHost();
             mi_ip = localhost.getHostAddress();
@@ -175,8 +174,6 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
             try (Socket misocket = new Socket(host_server, puerto); ObjectOutputStream paquete_datos = new ObjectOutputStream(misocket.getOutputStream())) {
 
                 paquete_datos.writeObject(datos);
-                misocket.close();
-                paquete_datos.close();
             }
         } catch (Exception e2) {
             System.out.println("Error " + e2);
@@ -213,30 +210,30 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
     private void btn_grupalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_grupalActionPerformed
         Map<String, String> Clientes_actuales = new HashMap<>();
 
-        // Obtener los datos de la tabla y agregarlos al HashMap
+// Obtener los datos de la tabla y agregarlos al HashMap
         for (int i = 0; i < tabla_contactos.getRowCount(); i++) {
             String nombre = tabla_contactos.getValueAt(i, 0).toString();
             String ip = tabla_contactos.getValueAt(i, 1).toString();
             Clientes_actuales.put(ip, nombre);
         }
 
-        // Crear un array de checkboxes con el mismo tamaño que el HashMap
+// Crear un array de checkboxes con el mismo tamaño que el HashMap
         JCheckBox[] checkBoxes = new JCheckBox[Clientes_actuales.size()];
 
-        // Crear los checkboxes y asignarles el texto del HashMap
+// Crear los checkboxes y asignarles el texto del HashMap
         int index = 0;
         for (Map.Entry<String, String> entry : Clientes_actuales.entrySet()) {
             checkBoxes[index] = new JCheckBox(entry.getValue());
             index++;
         }
 
-        // Mostrar el JOptionPane con los checkboxes
+// Mostrar el JOptionPane con los checkboxes
         int option = JOptionPane.showOptionDialog(null, checkBoxes, "Selecciona los elementos",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, null);
 
-        // Array contacto que seran del grupo
+// Array contacto que serán del grupo
         Map<String, String> Clientes_del_grupo = new HashMap<>();
-        // Imprimir los elementos seleccionados
+// Imprimir los elementos seleccionados
         if (option == JOptionPane.OK_OPTION) {
             for (JCheckBox checkBox : checkBoxes) {
                 if (checkBox.isSelected()) {
@@ -255,18 +252,14 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
         }
 
         String nombre_grupo = JOptionPane.showInputDialog("Ingresa el nombre del Grupo:");
-        // Verificar si el String está vacío
+// Verificar si el String está vacío
         if (nombre_grupo != null && !nombre_grupo.isEmpty()) {
-            //enviar solicitud al servidor
-            try {
-                Socket miSocket = new Socket(host_server, puerto);
+            // Enviar solicitud al servidor
+            try (Socket miSocket = new Socket(host_server, puerto); ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream())) {
 
-                Solicitud_chat_grupal scg = new Solicitud_chat_grupal(host_server, nombre_grupo, Clientes_del_grupo,0);
-                // enviar "solicitud" chat al server
-                ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
+                Solicitud_chat_grupal scg = new Solicitud_chat_grupal(host_server, nombre_grupo, Clientes_del_grupo, 0);
+                // Enviar "solicitud" chat al server
                 paquete_datos.writeObject(scg);
-                paquete_datos.close();
-                miSocket.close();
 
             } catch (UnknownHostException ex) {
                 Logger.getLogger(Cliente_vista.class.getName()).log(Level.SEVERE, null, ex);
@@ -277,6 +270,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
         } else {
             System.out.println("No se ingresó ningún texto.");
         }
+
     }//GEN-LAST:event_btn_grupalActionPerformed
 
     /**
@@ -354,20 +348,20 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
 
                     } else if (objeto_recibido instanceof Solicitud_chat_individual) {
                         Solicitud_chat_individual sci = (Solicitud_chat_individual) objeto_recibido;
-                        System.out.println("Recibi solicitud de chat priv "+sci.toString());
+                        System.out.println("Recibi solicitud de chat priv " + sci.toString());
                         chat_vista ch = new chat_vista(sci);
                         ch.setVisible(true);
                     } else if (objeto_recibido instanceof Solicitud_chat_grupal) {
                         Solicitud_chat_grupal sci = (Solicitud_chat_grupal) objeto_recibido;
-                        System.out.println("Recibi solicitud de chat Grupal "+sci.toString());
+                        System.out.println("Recibi solicitud de chat Grupal " + sci.toString());
                         chat_grupal_vista ch = new chat_grupal_vista(sci, mi_nombre);
                         ch.setVisible(true);
                     }
-                    miSocket.close();
-                    paquete_datos.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
