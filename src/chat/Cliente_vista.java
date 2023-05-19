@@ -32,7 +32,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
     private final int puerto2 = 9090;
     private int puerto_inicial = 49152;
     //private final String host_server = "localhost";
-    private final String host_server = "192.168.1.100";
+    private final String host_server = "192.168.84.238";
     private String mi_nombre = "";
     private String mi_ip = "";
     private Timer timer;
@@ -58,6 +58,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
         reloj();
         setLocationRelativeTo(null);
         mi_nombre = JOptionPane.showInputDialog(null, "¿Cual es tu nombre de usuario?");
+        mi_ip = JOptionPane.showInputDialog(null, "¿Cual es tu IP?");
         jl_nombre.setText("Cliente: " + mi_nombre);
         Thread hilo = new Thread(this);
         hilo.start();
@@ -164,10 +165,10 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         try {
-            // Obtener la dirección IP de localhost
-            InetAddress localhost = InetAddress.getLocalHost();
-            mi_ip = localhost.getHostAddress();
-            System.out.println(mi_ip);
+            // // Obtener la dirección IP de localhost
+            // InetAddress localhost = InetAddress.getLocalHost();
+            // mi_ip = localhost.getHostAddress();
+            //System.out.println(mi_ip);
 
             Cliente_conectado datos = new Cliente_conectado(mi_nombre, mi_ip, null);
 
