@@ -175,6 +175,8 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
             try (Socket misocket = new Socket(host_server, puerto); ObjectOutputStream paquete_datos = new ObjectOutputStream(misocket.getOutputStream())) {
 
                 paquete_datos.writeObject(datos);
+                misocket.close();
+                paquete_datos.close();
             }
         } catch (Exception e2) {
             System.out.println("Error " + e2);
