@@ -155,10 +155,7 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                         try {
                             Socket socket = new Socket(ipAddress, 9090);
 
-                            
-                            
                             // Configurar el objeto como desees antes de enviarlo
-
                             // Enviar el objeto a través del socket
                             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
                             outputStream.writeObject(cc);
@@ -173,21 +170,15 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                         }
                     }
                 } else if (objeto_recibido instanceof Solicitud_chat_individual) {
+                    
                     Solicitud_chat_individual solicitud = (Solicitud_chat_individual) objeto_recibido;
                     area_texto.append("\nChat ind entre " + solicitud.getMi_nombre() + " y " + solicitud.getDestinatario_nombre());
                     // primero cambiamos el puerto
                     solicitud.setPuerto_chat(puerto_inicial);
                     //añadimos +1 para que no se repita
                     puerto_inicial++;
-
-                    //enviar solicitud al Destino y que lo abra
-                    Socket enviaDestinatario = new Socket(solicitud.getDestinatario_ip(), puerto2);
-                    ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
-                    System.out.println("enviare al destino " + solicitud.toString());
-                    paqueteReenvio.writeObject(solicitud);
-
-                    //enviar solicitud al cliente Origen y que lo abra
-                    //invertimos los datos
+                    
+                    //datos para al origen
                     Solicitud_chat_individual solicitud_regresar = solicitud;
                     String nombreDT = solicitud_regresar.getDestinatario_nombre();
                     String ipDT = solicitud_regresar.getDestinatario_ip();
@@ -198,18 +189,36 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                     solicitud_regresar.setDestinatario_nombre(nombreOT);
                     solicitud_regresar.setMi_ip(ipDT);
                     solicitud_regresar.setMi_nombre(nombreDT);
-                    
                     System.out.println("enviare al origen " + solicitud_regresar.toString());
-                    Socket enviaOrigen = new Socket(solicitud_regresar.getMi_ip(), puerto2);
 
-                    ObjectOutputStream paqueteReenvio2 = new ObjectOutputStream(enviaOrigen.getOutputStream());
+                    //enviar solicitud al Destino y que lo abra
+                    Socket enviaDestinatario = new Socket(solicitud.getDestinatario_ip(), puerto2);
+                    ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
+                    System.out.println("enviare al destino " + solicitud.toString());
                     paqueteReenvio.writeObject(solicitud_regresar);
 
                     //cerrar streams
                     enviaDestinatario.close();
-                    enviaOrigen.close();
                     paqueteReenvio.close();
-                    paqueteReenvio2.close();
+
+                    //responder al origen
+                    try {
+                        Socket socket = new Socket(ipOT, puerto2);
+
+                        // Configurar el objeto como desees antes de enviarlo
+                        // Enviar el objeto a través del socket
+                        ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+                        outputStream.writeObject(solicitud);
+
+                        // Cerrar el socket después de enviar el objeto
+                        socket.close();
+                        outputStream.close();
+
+                    } catch (IOException e) {
+                        // Manejar cualquier excepción que pueda ocurrir durante el envío del objeto
+                        System.err.println("Error al enviar respuesta a " + ipOT + "): " + e.getMessage());
+                    }
+
                 } else if (objeto_recibido instanceof Mensaje_ind) {
 //                    Mensaje_ind msj_i = (Mensaje_ind) objeto_recibido;
 //                    area_texto.append("\nmensaje de " + msj_i.getRemitente_nombre() + " para " + msj_i.getDestinatario_nombre());

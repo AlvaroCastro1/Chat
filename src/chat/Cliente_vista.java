@@ -354,9 +354,10 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
 
                     } else if (objeto_recibido instanceof Solicitud_chat_individual) {
                         Solicitud_chat_individual sci = (Solicitud_chat_individual) objeto_recibido;
-                        // Realizar acciones específicas para la solicitud de chat individual
-                    } else {
-                        System.out.println("Tipo de objeto desconocido");
+                        System.out.println("Recibi solicitud de chat priv "+sci.toString());
+                        chat_vista ch = new chat_vista(sci);
+                        ch.setVisible(true);
+                        this.dispose();
                     }
                 }
             }
