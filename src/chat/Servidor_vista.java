@@ -230,6 +230,8 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                     paqueteReenvio.close();
                 } else if (objeto_recibido instanceof Solicitud_chat_grupal) {
                     Solicitud_chat_grupal solicitud = (Solicitud_chat_grupal) objeto_recibido;
+                    solicitud.setPuerto_chat(puerto_inicial);
+                    puerto_inicial++;
                     area_texto.append("\nNuevo Chat grupal " + solicitud.getNombre_grupo());
                     area_texto.append(solicitud.getClientes().toString());
 

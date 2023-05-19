@@ -209,7 +209,6 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
     }//GEN-LAST:event_btn_individualActionPerformed
 
     private void btn_grupalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_grupalActionPerformed
-        /*
         Map<String, String> Clientes_actuales = new HashMap<>();
 
         // Obtener los datos de la tabla y agregarlos al HashMap
@@ -260,7 +259,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
             try {
                 Socket miSocket = new Socket(host_server, puerto);
 
-                Solicitud_chat_grupal scg = new Solicitud_chat_grupal(host_server, nombre_grupo, Clientes_del_grupo);
+                Solicitud_chat_grupal scg = new Solicitud_chat_grupal(host_server, nombre_grupo, Clientes_del_grupo,0);
                 // enviar "solicitud" chat al server
                 ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
                 paquete_datos.writeObject(scg);
@@ -271,12 +270,10 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
             } catch (IOException ex) {
                 Logger.getLogger(Cliente_vista.class.getName()).log(Level.SEVERE, null, ex);
             }
-            Solicitud_chat_grupal scg = new Solicitud_chat_grupal(host_server, nombre_grupo, Clientes_del_grupo);
 
         } else {
             System.out.println("No se ingresó ningún texto.");
         }
-         */
     }//GEN-LAST:event_btn_grupalActionPerformed
 
     /**
@@ -356,6 +353,11 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
                         Solicitud_chat_individual sci = (Solicitud_chat_individual) objeto_recibido;
                         System.out.println("Recibi solicitud de chat priv "+sci.toString());
                         chat_vista ch = new chat_vista(sci);
+                        ch.setVisible(true);
+                    } else if (objeto_recibido instanceof Solicitud_chat_grupal) {
+                        Solicitud_chat_grupal sci = (Solicitud_chat_grupal) objeto_recibido;
+                        System.out.println("Recibi solicitud de chat Grupal "+sci.toString());
+                        chat_grupal_vista ch = new chat_grupal_vista(sci, mi_nombre);
                         ch.setVisible(true);
                     }
                 }
