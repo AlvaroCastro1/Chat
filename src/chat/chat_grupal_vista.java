@@ -142,7 +142,6 @@ public class chat_grupal_vista extends javax.swing.JFrame implements Runnable {
 
     public void run() {
         try {
-            // System.out.println("escuchando");
             ServerSocket servidor = new ServerSocket(p_com_g);
 
             while (true) {
@@ -154,17 +153,18 @@ public class chat_grupal_vista extends javax.swing.JFrame implements Runnable {
                 if (objeto_recibido instanceof Mensaje_grupal) {
                     Mensaje_grupal paquete_mensaje = (Mensaje_grupal) objeto_recibido;
                     // verificamos que este sea el chat donde se debe mostrar el mensaje
-
                     if (Nombre_grupo.equals(paquete_mensaje.getNombre_Grupo())) {
                         area_chat.append("\n" + paquete_mensaje.getMensaje());
                     }
                 }
-                servidor.close();
+
                 miSocket.close();
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
 
