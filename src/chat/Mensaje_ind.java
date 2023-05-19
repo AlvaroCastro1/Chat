@@ -12,15 +12,25 @@ public class Mensaje_ind implements Serializable{
     private String Destinatario_nombre;
     private String Destinatario_ip;
     private String Host_Server;
+    private int puerto_com;
     private String Mensaje;
 
-    public Mensaje_ind(String Remitente_nombre, String Remitente_ip, String Destinatario_nombre, String Destinatario_ip, String Host_Server, String Mensaje) {
+    public Mensaje_ind(String Remitente_nombre, String Remitente_ip, String Destinatario_nombre, String Destinatario_ip, String Host_Server, String Mensaje, int puerto_com) {
         this.Remitente_nombre = Remitente_nombre;
         this.Remitente_ip = Remitente_ip;
         this.Destinatario_nombre = Destinatario_nombre;
         this.Destinatario_ip = Destinatario_ip;
         this.Host_Server = Host_Server;
+        this.puerto_com = puerto_com;
         this.Mensaje = Mensaje;
+    }
+
+    public int getPuerto_com() {
+        return puerto_com;
+    }
+
+    public void setPuerto_com(int puerto_com) {
+        this.puerto_com = puerto_com;
     }
     
     

@@ -220,14 +220,14 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                     }
 
                 } else if (objeto_recibido instanceof Mensaje_ind) {
-//                    Mensaje_ind msj_i = (Mensaje_ind) objeto_recibido;
-//                    area_texto.append("\nmensaje de " + msj_i.getRemitente_nombre() + " para " + msj_i.getDestinatario_nombre());
-//
-//                    Socket enviaDestinatario = new Socket(msj_i.getDestinatario_ip(), p_com, );
-//                    ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
-//                    paqueteReenvio.writeObject(msj_i);
-//                    enviaDestinatario.close();
-//                    paqueteReenvio.close();
+                    Mensaje_ind msj_i = (Mensaje_ind) objeto_recibido;
+                    area_texto.append("\nmensaje de " + msj_i.getRemitente_nombre() + " para " + msj_i.getDestinatario_nombre());
+
+                    Socket enviaDestinatario = new Socket(msj_i.getDestinatario_ip(), msj_i.getPuerto_com() );
+                    ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
+                    paqueteReenvio.writeObject(msj_i);
+                    enviaDestinatario.close();
+                    paqueteReenvio.close();
                 } else if (objeto_recibido instanceof Solicitud_chat_grupal) {
                     Solicitud_chat_grupal solicitud = (Solicitud_chat_grupal) objeto_recibido;
                     area_texto.append("\nNuevo Chat grupal " + solicitud.getNombre_grupo());

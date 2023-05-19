@@ -140,7 +140,8 @@ public class chat_vista extends javax.swing.JFrame implements Runnable {
                     destinatario_nombre, 
                     destinatario_ip, 
                     host_server,
-                    texto_mensaje
+                    texto_mensaje,
+                    p_com
             );
 
             area_chat.append("\n"+mi_nombre+ ": "+txt_mensaje.getText());
