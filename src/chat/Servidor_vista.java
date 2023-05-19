@@ -202,7 +202,7 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                     System.out.println("enviare al origen " + solicitud_regresar.toString());
                     Socket enviaOrigen = new Socket(solicitud_regresar.getMi_ip(), puerto2);
 
-                    ObjectOutputStream paqueteReenvio2 = new ObjectOutputStream(enviaDestinatario.getOutputStream());
+                    ObjectOutputStream paqueteReenvio2 = new ObjectOutputStream(enviaOrigen.getOutputStream());
                     paqueteReenvio.writeObject(solicitud_regresar);
 
                     //cerrar streams

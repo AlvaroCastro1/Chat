@@ -184,35 +184,27 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
     private void btn_individualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_individualActionPerformed
         int selectedRow = tabla_contactos.getSelectedRow();
 
-        if (selectedRow != -1) { // Si hay una fila seleccionada
-            // Obtener los datos de la fila seleccionada
+        if (selectedRow != -1) {
             String nombre_s = tabla_contactos.getValueAt(selectedRow, 0).toString();
             String ip_s = tabla_contactos.getValueAt(selectedRow, 1).toString();
 
-            try {
-                Socket miSocket = new Socket(host_server, puerto);
+            try (Socket miSocket = new Socket(host_server, puerto); ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream())) {
 
-                // Mostrar el chat
                 Solicitud_chat_individual sl = new Solicitud_chat_individual(mi_nombre, mi_ip, nombre_s, ip_s, host_server, 0);
 
-                ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
                 paquete_datos.writeObject(sl);
-                System.out.println("enviare " + sl.toString());
+                System.out.println("enviaré " + sl.toString());
 
                 // Aquí puedes continuar con otras operaciones de envío o recepción de datos
-                // Cerrar el ObjectOutputStream y el Socket cuando ya no se necesiten
-                paquete_datos.close();
-                miSocket.close();
-
             } catch (UnknownHostException ex) {
-                System.out.println("Error al enviar solicitud " + ex);
+                System.out.println("Error al enviar solicitud: " + ex);
             } catch (IOException ex) {
-                System.out.println("Error al enviar solicitud " + ex);
+                System.out.println("Error al enviar solicitud: " + ex);
             }
-
         } else {
-            JOptionPane.showMessageDialog(null, "No se ha seleccionado ningun Contacto.", "Ocurrió un error.", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "No se ha seleccionado ningún contacto.", "Error", JOptionPane.ERROR_MESSAGE);
         }
+
 
     }//GEN-LAST:event_btn_individualActionPerformed
 
@@ -336,40 +328,37 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
     public void run() {
 
         //----------------------------------------------------------------------------------------------------------------------------------
-        try {
-            ServerSocket servidor = new ServerSocket(puerto2);
-
+        try (ServerSocket servidor = new ServerSocket(puerto2)) {
             while (true) {
-                Socket miSocket = servidor.accept();
+                try (Socket miSocket = servidor.accept(); ObjectInputStream paquete_datos = new ObjectInputStream(miSocket.getInputStream())) {
 
-                ObjectInputStream paquete_datos = new ObjectInputStream(miSocket.getInputStream());
+                    Object objeto_recibido = paquete_datos.readObject();
 
-                Object objeto_recibido = paquete_datos.readObject();
-                // Cuando el servidor reciba un objeto de tipo cliente conectado, añadirlo a la lista
-                if (objeto_recibido instanceof Cliente_conectado) {
-                    Cliente_conectado cc = (Cliente_conectado) objeto_recibido;
+                    if (objeto_recibido instanceof Cliente_conectado) {
+                        Cliente_conectado cc = (Cliente_conectado) objeto_recibido;
 
-                    //limpiar la tabla
-                    DefaultTableModel tb = (DefaultTableModel) tabla_contactos.getModel();
-                    tb.setRowCount(0);
-
-                    for (Map.Entry<String, String> entry : cc.getClientes().entrySet()) {
-                        String nombre = entry.getValue();
-                        String ip = entry.getKey();
+                        // Limpiar la tabla
                         DefaultTableModel model = (DefaultTableModel) tabla_contactos.getModel();
+                        model.setRowCount(0);
 
-                        // Agregar una nueva fila con texto
-                        model.addRow(new Object[]{nombre, ip});
+                        for (Map.Entry<String, String> entry : cc.getClientes().entrySet()) {
+                            String nombre = entry.getValue();
+                            String ip = entry.getKey();
+
+                            // Agregar una nueva fila con texto
+                            model.addRow(new Object[]{nombre, ip});
+                        }
 
                         // Establecer el modelo en la JTable
                         tabla_contactos.setModel(model);
+
+                    } else if (objeto_recibido instanceof Solicitud_chat_individual) {
+                        Solicitud_chat_individual sci = (Solicitud_chat_individual) objeto_recibido;
+                        // Realizar acciones específicas para la solicitud de chat individual
+                    } else {
+                        System.out.println("Tipo de objeto desconocido");
                     }
-
-                } else if (objeto_recibido instanceof Solicitud_chat_individual) {
-                    System.out.println("recibe una \"solicitud de un chat\"");
-
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();
