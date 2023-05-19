@@ -194,10 +194,13 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
 
                 // Mostrar el chat
                 Solicitud_chat_individual sl = new Solicitud_chat_individual(mi_nombre, mi_ip, nombre_s, ip_s, host_server, 0);
-                // enviar "solicitud" chat al server
+
                 ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
                 paquete_datos.writeObject(sl);
                 System.out.println("enviare " + sl.toString());
+
+                // Aquí puedes continuar con otras operaciones de envío o recepción de datos
+                // Cerrar el ObjectOutputStream y el Socket cuando ya no se necesiten
                 paquete_datos.close();
                 miSocket.close();
 
@@ -210,6 +213,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
         } else {
             JOptionPane.showMessageDialog(null, "No se ha seleccionado ningun Contacto.", "Ocurrió un error.", JOptionPane.ERROR_MESSAGE);
         }
+
     }//GEN-LAST:event_btn_individualActionPerformed
 
     private void btn_grupalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_grupalActionPerformed
@@ -330,38 +334,45 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
     }
 
     public void run() {
-        try (ServerSocket servidor = new ServerSocket(puerto2)) {
+
+        //----------------------------------------------------------------------------------------------------------------------------------
+        try {
+            ServerSocket servidor = new ServerSocket(puerto2);
+
             while (true) {
-                try (Socket miSocket = servidor.accept(); ObjectInputStream paquete_datos = new ObjectInputStream(miSocket.getInputStream())) {
+                Socket miSocket = servidor.accept();
 
-                    Object objeto_recibido = paquete_datos.readObject();
+                ObjectInputStream paquete_datos = new ObjectInputStream(miSocket.getInputStream());
 
-                    if (objeto_recibido instanceof Cliente_conectado) {
-                        Cliente_conectado cc = (Cliente_conectado) objeto_recibido;
+                Object objeto_recibido = paquete_datos.readObject();
+                // Cuando el servidor reciba un objeto de tipo cliente conectado, añadirlo a la lista
+                if (objeto_recibido instanceof Cliente_conectado) {
+                    Cliente_conectado cc = (Cliente_conectado) objeto_recibido;
 
+                    //limpiar la tabla
+                    DefaultTableModel tb = (DefaultTableModel) tabla_contactos.getModel();
+                    tb.setRowCount(0);
+
+                    for (Map.Entry<String, String> entry : cc.getClientes().entrySet()) {
+                        String nombre = entry.getValue();
+                        String ip = entry.getKey();
                         DefaultTableModel model = (DefaultTableModel) tabla_contactos.getModel();
-                        model.setRowCount(0);
 
-                        for (Map.Entry<String, String> entry : cc.getClientes().entrySet()) {
-                            String nombre = entry.getValue();
-                            String ip = entry.getKey();
-                            model.addRow(new Object[]{nombre, ip});
-                        }
+                        // Agregar una nueva fila con texto
+                        model.addRow(new Object[]{nombre, ip});
 
+                        // Establecer el modelo en la JTable
                         tabla_contactos.setModel(model);
-                    }  else if (objeto_recibido instanceof Solicitud_chat_individual) {
-                        System.out.println("Se recibió una solicitud para individual\n");
-                    } else if (objeto_recibido instanceof Mensaje_ind) {
-                        System.out.println("Se recibió un mensaje individual");
-                    } else if (objeto_recibido instanceof Solicitud_chat_grupal) {
-                        Solicitud_chat_grupal datos_chat_grup = (Solicitud_chat_grupal) objeto_recibido;
-                        chat_grupal_vista chv = new chat_grupal_vista(datos_chat_grup, mi_nombre);
-                        chv.setVisible(true);
                     }
+
+                } else if (objeto_recibido instanceof Solicitud_chat_individual) {
+                    System.out.println("recibe una \"solicitud de un chat\"");
+
                 }
+
             }
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
 
     }
