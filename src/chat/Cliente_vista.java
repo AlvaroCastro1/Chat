@@ -351,49 +351,19 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
                         tabla_contactos.setModel(model);
                     }  else if (objeto_recibido instanceof Solicitud_chat_individual) {
                         System.out.println("Se recibió una solicitud para individual\n");
+                    } else if (objeto_recibido instanceof Mensaje_ind) {
+                        System.out.println("Se recibió un mensaje individual");
+                    } else if (objeto_recibido instanceof Solicitud_chat_grupal) {
+                        Solicitud_chat_grupal datos_chat_grup = (Solicitud_chat_grupal) objeto_recibido;
+                        chat_grupal_vista chv = new chat_grupal_vista(datos_chat_grup, mi_nombre);
+                        chv.setVisible(true);
                     }
-
-                } catch (EOFException e) {
-                    // Manejo de la excepción EOFException
-                    System.out.println("Se alcanzó el final de la secuencia de datos: " + e);
-                } catch (IOException | ClassNotFoundException e) {
-                    // Manejo de otras excepciones
-                    System.out.println("Hubo un error al recibir: " + e);
                 }
             }
-        } catch (IOException ex) {
-            Logger.getLogger(Cliente_vista.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception e) {
+            System.out.println(e);
         }
-        
-        //        try (ServerSocket servidor = new ServerSocket(puerto2)) {
-//            while (true) {
-//                try (Socket miSocket = servidor.accept(); ObjectInputStream paquete_datos = new ObjectInputStream(miSocket.getInputStream())) {
-//
-//                    Object objeto_recibido = paquete_datos.readObject();
-//
-//                    if (objeto_recibido instanceof Cliente_conectado) {
-//                        Cliente_conectado cc = (Cliente_conectado) objeto_recibido;
-//
-//                        DefaultTableModel model = (DefaultTableModel) tabla_contactos.getModel();
-//                        model.setRowCount(0);
-//
-//                        for (Map.Entry<String, String> entry : cc.getClientes().entrySet()) {
-//                            String nombre = entry.getValue();
-//                            String ip = entry.getKey();
-//                            model.addRow(new Object[]{nombre, ip});
-//                        }
-//
-//                        tabla_contactos.setModel(model);
-//                    } else if (objeto_recibido instanceof Solicitud_chat_individual) {
-//                        System.out.println("Se recibió una solicitud para individual\n");
-//
-//                    } else if (objeto_recibido instanceof Solicitud_chat_grupal) {
-//                    }
-//                }
-//            }
-//        } catch (IOException | ClassNotFoundException e) {
-//            System.out.println("Hubo un error al recibir: " + e);
-//        }
+
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_grupal;
