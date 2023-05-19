@@ -363,6 +363,8 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
                         chat_grupal_vista ch = new chat_grupal_vista(sci, mi_nombre);
                         ch.setVisible(true);
                     }
+                    miSocket.close();
+                    paquete_datos.close();
                 }
             }
         } catch (Exception e) {
