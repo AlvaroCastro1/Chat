@@ -9,7 +9,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -156,7 +155,10 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                         try {
                             Socket socket = new Socket(ipAddress, 9090);
 
+                            
+                            
                             // Configurar el objeto como desees antes de enviarlo
+
                             // Enviar el objeto a través del socket
                             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
                             outputStream.writeObject(cc);
@@ -164,6 +166,7 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                             // Cerrar el socket después de enviar el objeto
                             socket.close();
 
+                            System.out.println("Objeto enviado a " + username + " (" + ipAddress + ")");
                         } catch (IOException e) {
                             // Manejar cualquier excepción que pueda ocurrir durante el envío del objeto
                             System.err.println("Error al enviar el objeto a " + username + " (" + ipAddress + "): " + e.getMessage());

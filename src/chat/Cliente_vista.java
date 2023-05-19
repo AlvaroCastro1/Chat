@@ -330,38 +330,42 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
     }
 
     public void run() {
+        try (ServerSocket servidor = new ServerSocket(puerto2)) {
+            while (true) {
+                try (Socket miSocket = servidor.accept(); ObjectInputStream paquete_datos = new ObjectInputStream(miSocket.getInputStream())) {
 
-        try {
-            ServerSocket servidor = new ServerSocket(puerto2);
-            Socket miSocket = servidor.accept();
-            ObjectInputStream paquete_datos = new ObjectInputStream(miSocket.getInputStream());
-            Object objeto_recibido = paquete_datos.readObject();
-            if (objeto_recibido instanceof Cliente_conectado) {
-                Cliente_conectado cc = (Cliente_conectado) objeto_recibido;
+                    Object objeto_recibido = paquete_datos.readObject();
 
-                DefaultTableModel model = (DefaultTableModel) tabla_contactos.getModel();
-                model.setRowCount(0);
+                    if (objeto_recibido instanceof Cliente_conectado) {
+                        Cliente_conectado cc = (Cliente_conectado) objeto_recibido;
 
-                for (Map.Entry<String, String> entry : cc.getClientes().entrySet()) {
-                    String nombre = entry.getValue();
-                    String ip = entry.getKey();
-                    model.addRow(new Object[]{nombre, ip});
+                        DefaultTableModel model = (DefaultTableModel) tabla_contactos.getModel();
+                        model.setRowCount(0);
+
+                        for (Map.Entry<String, String> entry : cc.getClientes().entrySet()) {
+                            String nombre = entry.getValue();
+                            String ip = entry.getKey();
+                            model.addRow(new Object[]{nombre, ip});
+                        }
+
+                        tabla_contactos.setModel(model);
+                    }  else if (objeto_recibido instanceof Solicitud_chat_individual) {
+                        System.out.println("Se recibió una solicitud para individual\n");
+                    }
+
+                } catch (EOFException e) {
+                    // Manejo de la excepción EOFException
+                    System.out.println("Se alcanzó el final de la secuencia de datos: " + e);
+                } catch (IOException | ClassNotFoundException e) {
+                    // Manejo de otras excepciones
+                    System.out.println("Hubo un error al recibir: " + e);
                 }
-
-                tabla_contactos.setModel(model);
-            } else if (objeto_recibido instanceof Solicitud_chat_individual) {
-                System.out.println("Se recibió una solicitud para individual\n");
             }
-
-        } catch (EOFException e) {
-            // Manejo de la excepción EOFException
-            System.out.println("Se alcanzó el final de la secuencia de datos: " + e);
-        } catch (IOException | ClassNotFoundException e) {
-            // Manejo de otras excepciones
-            System.out.println("Hubo un error al recibir: " + e);
+        } catch (IOException ex) {
+            Logger.getLogger(Cliente_vista.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-//        try (ServerSocket servidor = new ServerSocket(puerto2)) {
+        
+        //        try (ServerSocket servidor = new ServerSocket(puerto2)) {
 //            while (true) {
 //                try (Socket miSocket = servidor.accept(); ObjectInputStream paquete_datos = new ObjectInputStream(miSocket.getInputStream())) {
 //
