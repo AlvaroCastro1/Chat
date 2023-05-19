@@ -26,6 +26,7 @@ public class Inicio extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
 
         jLabel1 = new javax.swing.JLabel();
         btn_cliente = new javax.swing.JButton();
@@ -33,10 +34,16 @@ public class Inicio extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+        getContentPane().setLayout(new java.awt.GridBagLayout());
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/chat/pregunta.jpg"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 0, -1, -1));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 0, 0);
+        getContentPane().add(jLabel1, gridBagConstraints);
 
         btn_cliente.setBackground(new java.awt.Color(255, 204, 204));
         btn_cliente.setFont(new java.awt.Font("Segoe UI", 2, 24)); // NOI18N
@@ -47,7 +54,15 @@ public class Inicio extends javax.swing.JFrame {
                 btn_clienteActionPerformed(evt);
             }
         });
-        getContentPane().add(btn_cliente, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 280, 240, 90));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.ipadx = 138;
+        gridBagConstraints.ipady = 51;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 0, 0);
+        getContentPane().add(btn_cliente, gridBagConstraints);
 
         btn_servidor.setBackground(new java.awt.Color(255, 255, 204));
         btn_servidor.setFont(new java.awt.Font("Segoe UI", 2, 24)); // NOI18N
@@ -58,7 +73,14 @@ public class Inicio extends javax.swing.JFrame {
                 btn_servidorActionPerformed(evt);
             }
         });
-        getContentPane().add(btn_servidor, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 280, 250, 90));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.ipadx = 135;
+        gridBagConstraints.ipady = 51;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(2, 0, 0, 0);
+        getContentPane().add(btn_servidor, gridBagConstraints);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
