@@ -264,6 +264,7 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
                 ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
                 paquete_datos.writeObject(scg);
                 paquete_datos.close();
+                miSocket.close();
 
             } catch (UnknownHostException ex) {
                 Logger.getLogger(Cliente_vista.class.getName()).log(Level.SEVERE, null, ex);
