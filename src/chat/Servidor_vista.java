@@ -178,6 +178,16 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                     //añadimos +1 para que no se repita
                     puerto_inicial++;
                     
+                    //enviar solicitud al Destino y que lo abra
+                    Socket enviaDestinatario = new Socket(solicitud.getDestinatario_ip(), puerto2);
+                    ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
+                    System.out.println("enviare al destino " + solicitud.toString());
+                    paqueteReenvio.writeObject(solicitud);
+                    
+                    //cerrar streams
+                    enviaDestinatario.close();
+                    paqueteReenvio.close();
+                    
                     //datos para al origen
                     Solicitud_chat_individual solicitud_regresar = solicitud;
                     String nombreDT = solicitud_regresar.getDestinatario_nombre();
@@ -190,16 +200,6 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                     solicitud_regresar.setMi_ip(ipDT);
                     solicitud_regresar.setMi_nombre(nombreDT);
                     System.out.println("enviare al origen " + solicitud_regresar.toString());
-
-                    //enviar solicitud al Destino y que lo abra
-                    Socket enviaDestinatario = new Socket(solicitud.getDestinatario_ip(), puerto2);
-                    ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
-                    System.out.println("enviare al destino " + solicitud.toString());
-                    paqueteReenvio.writeObject(solicitud_regresar);
-
-                    //cerrar streams
-                    enviaDestinatario.close();
-                    paqueteReenvio.close();
 
                     //responder al origen
                     try {
