@@ -179,7 +179,7 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
                     puerto_inicial++;
                     
                     //enviar solicitud al Destino y que lo abra
-                    Socket enviaDestinatario = new Socket(solicitud.getDestinatario_ip(), puerto2);
+                    Socket enviaDestinatario = new Socket(solicitud.getMi_ip(), puerto2);
                     ObjectOutputStream paqueteReenvio = new ObjectOutputStream(enviaDestinatario.getOutputStream());
                     System.out.println("enviare al destino " + solicitud.toString());
                     paqueteReenvio.writeObject(solicitud);
@@ -203,7 +203,7 @@ public class Servidor_vista extends javax.swing.JFrame implements Runnable {
 
                     //responder al origen
                     try {
-                        Socket socket = new Socket(ipOT, puerto2);
+                        Socket socket = new Socket(ipDT, puerto2);
 
                         // Configurar el objeto como desees antes de enviarlo
                         // Enviar el objeto a través del socket

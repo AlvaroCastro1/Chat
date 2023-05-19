@@ -357,7 +357,6 @@ public class Cliente_vista extends javax.swing.JFrame implements Runnable {
                         System.out.println("Recibi solicitud de chat priv "+sci.toString());
                         chat_vista ch = new chat_vista(sci);
                         ch.setVisible(true);
-                        this.dispose();
                     }
                 }
             }
