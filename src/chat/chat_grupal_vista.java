@@ -118,7 +118,7 @@ public class chat_grupal_vista extends javax.swing.JFrame implements Runnable {
 
             String texto_mensaje = txt_mensaje.getText().trim();
 
-            Mensaje_grupal m = new Mensaje_grupal(Clientes, mi_nombre + ": " + txt_mensaje.getText(), jl_Titulo.getText(), host_server);
+            Mensaje_grupal m = new Mensaje_grupal(Clientes, mi_nombre + ": " + txt_mensaje.getText(), jl_Titulo.getText(), host_server, p_com_g);
 
             ObjectOutputStream paquete_datos = new ObjectOutputStream(miSocket.getOutputStream());
             paquete_datos.writeObject(m);

@@ -13,15 +13,25 @@ public class Mensaje_grupal implements Serializable{
     private Map<String, String> Clientes_grupo;
 
     private String Host_Server;
+    private int puerto_chat;
 
     private String Mensaje;
     private String Nombre_Grupo;
 
-    public Mensaje_grupal(Map<String, String> Clientes_grupo, String Mensaje, String Nombre_Grupo, String Host_Server) {
+    public Mensaje_grupal(Map<String, String> Clientes_grupo, String Mensaje, String Nombre_Grupo, String Host_Server, int puerto_chat ) {
         this.Clientes_grupo = Clientes_grupo;
         this.Host_Server = Host_Server;
+        this.puerto_chat = puerto_chat;
         this.Mensaje = Mensaje;
         this.Nombre_Grupo = Nombre_Grupo;
+    }
+
+    public int getPuerto_chat() {
+        return puerto_chat;
+    }
+
+    public void setPuerto_chat(int puerto_chat) {
+        this.puerto_chat = puerto_chat;
     }
     
 
